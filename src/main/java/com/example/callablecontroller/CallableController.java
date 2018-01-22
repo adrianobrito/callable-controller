@@ -1,29 +1,25 @@
 package com.example.callablecontroller;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.WebAsyncTask;
 
 import java.util.concurrent.Callable;
 
-@Controller
+@RestController
 @RequestMapping("/async/callable")
 public class CallableController {
 
 
-    @RequestMapping("/response-body")
-    public @ResponseBody Callable<String> callable() {
+    @GetMapping("/response-body")
+    public Callable<String> callable() {
         return () -> {
             Thread.sleep(2000);
             return "Callable result";
         };
     }
 
-    @RequestMapping("/exception")
-    public @ResponseBody Callable<String> callableWithException(
+    @GetMapping("/exception")
+    public Callable<String> callableWithException(
         final @RequestParam(required=false, defaultValue="true") boolean handled
     ) {
         return () -> {
@@ -38,8 +34,8 @@ public class CallableController {
         };
     }
 
-    @RequestMapping("/custom-timeout-handling")
-    public @ResponseBody WebAsyncTask<String> callableWithCustomTimeoutHandling() {
+    @GetMapping("/custom-timeout-handling")
+    public WebAsyncTask<String> callableWithCustomTimeoutHandling() {
         Callable<String> callable = () -> {
             Thread.sleep(2000);
             return "Callable result";
@@ -49,7 +45,6 @@ public class CallableController {
     }
 
     @ExceptionHandler
-    @ResponseBody
     public String handleException(IllegalStateException ex) {
         return "Handled exception: " + ex.getMessage();
     }
